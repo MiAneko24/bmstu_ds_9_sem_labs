@@ -1,18 +1,43 @@
 version: "3"
 services:
-  postgres:
-    image: library/postgres:13
-    container_name: postgres
+  payments-db:
+    build:
+      context: postgres
     restart: on-failure
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: postgres
-    volumes:
-      - db-data:/var/lib/postgresql/data
-      - ./postgres/:/docker-entrypoint-initdb.d/
     ports:
-      - "5432:5432"
+      - 5432:5432
+    environment:
+      POSTGRES_USER: payment
+      POSTGRES_PASSWORD: "payment"
+      POSTGRES_DB: payments
+    volumes:
+      - db-data:/var/lib/postgresql
+
+  reservations-db:
+    build:
+      context: postgres
+    restart: on-failure
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: reservation
+      POSTGRES_PASSWORD: "reservation"
+      POSTGRES_DB: reservations
+    volumes:
+      - db-data:/var/lib/postgresql
+
+  loyalties-db:
+    build:
+      context: postgres
+    restart: on-failure
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: loyalty
+      POSTGRES_PASSWORD: "loyalty"
+      POSTGRES_DB: loyalties
+    volumes:
+      - db-data:/var/lib/postgresql
 
 # TODO добавить сервисы
 
