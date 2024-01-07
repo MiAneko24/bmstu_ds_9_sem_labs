@@ -1,6 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 val log4jVersion: String by project
 val junitVersion: String by project
@@ -18,19 +16,9 @@ plugins {
 	id("org.jetbrains.kotlin.plugin.spring") version "1.9.20"
 }
 
-group = "com.mianeko.gateway"
+group = "com.mianeko"
 version = "0.0.1-SNAPSHOT"
-
-kotlin {
-	jvmToolchain(17)
-	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_17)
-	}
-}
-
-repositories {
-	mavenCentral()
-}
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
 	implementation("org.postgresql:postgresql:$postgresVersion")
@@ -47,20 +35,24 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
+
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 }
 
 application {
 	mainClass.set("com.mianeko.gateway.GatewayApplicationKt")
 }
 
-tasks.withType<BootJar> {
-//    targetJavaVersion.set(JavaVersion.VERSION_17)
-	archiveClassifier.set("all")
+configurations.all { exclude(group = "org.eclipse.angus", module = "angus-activation") }
+
+tasks.withType<KotlinCompile> {
+	kotlinOptions {
+		freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
+		jvmTarget = "17"
+		languageVersion = "1.9"
+	}
 }
 
-tasks.named<Test>("test") {
+tasks.withType<Test> {
 	useJUnitPlatform()
-	testLogging {
-		events("passed")
-	}
 }

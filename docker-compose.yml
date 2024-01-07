@@ -1,43 +1,63 @@
 version: "3"
 services:
-  payments-db:
+  hotels-reservation-db:
     build:
       context: postgres
     restart: on-failure
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: payment
-      POSTGRES_PASSWORD: "payment"
-      POSTGRES_DB: payments
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
     volumes:
       - db-data:/var/lib/postgresql
 
-  reservations-db:
+  loyalty-service:
     build:
-      context: postgres
-    restart: on-failure
+      context: v2
+      args:
+        PROJECT: loyaltyService
+    restart: unless-stopped
     ports:
-      - 5432:5432
+      - 8050:8080
     environment:
-      POSTGRES_USER: reservation
-      POSTGRES_PASSWORD: "reservation"
-      POSTGRES_DB: reservations
-    volumes:
-      - db-data:/var/lib/postgresql
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://hotels-reservation-db:5432/loyalties
+      - SPRING_DATASOURCE_USERNAME=loyalty
+      - SPRING_DATASOURCE_PASSWORD=loyalty
+    depends_on:
+      - hotels-reservation-db
 
-  loyalties-db:
+  payment-service:
     build:
-      context: postgres
-    restart: on-failure
+      context: v2
+      args:
+        PROJECT: paymentService
+    restart: unless-stopped
     ports:
-      - 5432:5432
+      - 8060:8080
     environment:
-      POSTGRES_USER: loyalty
-      POSTGRES_PASSWORD: "loyalty"
-      POSTGRES_DB: loyalties
-    volumes:
-      - db-data:/var/lib/postgresql
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://hotels-reservation-db:5432/payments
+      - SPRING_DATASOURCE_USERNAME=payment
+      - SPRING_DATASOURCE_PASSWORD=payment
+    depends_on:
+      - hotels-reservation-db
+
+  reservation-service:
+    build:
+      context: v2
+      args:
+        PROJECT: reservationService
+    restart: unless-stopped
+    ports:
+      - 8060:8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://hotels-reservation-db:5432/reservations
+      - SPRING_DATASOURCE_USERNAME=reservation
+      - SPRING_DATASOURCE_PASSWORD=reservation
+    depends_on:
+      - hotels-reservation-db
+
 
 # TODO добавить сервисы
 

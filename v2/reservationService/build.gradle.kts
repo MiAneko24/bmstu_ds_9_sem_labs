@@ -1,6 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 val log4jVersion: String by project
 val junitVersion: String by project
@@ -18,26 +16,13 @@ plugins {
 	id("org.jetbrains.kotlin.plugin.spring") version "1.9.20"
 }
 
-group = "com.mianeko.reservationservice"
+group = "com.mianeko"
 version = "0.0.1-SNAPSHOT"
-
-kotlin {
-	jvmToolchain(17)
-	compilerOptions {
-		jvmTarget.set(JvmTarget.JVM_17)
-	}
-}
-
-repositories {
-	mavenCentral()
-}
 
 dependencies {
 	implementation("org.postgresql:postgresql:$postgresVersion")
 
 	implementation("org.springframework.boot:spring-boot-starter")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.mockito:mockito-core")
 	implementation("org.ktorm:ktorm-core:$ktormVersion")
@@ -50,17 +35,17 @@ dependencies {
 }
 
 application {
-	mainClass.set("com.mianeko.reservationService.ReservationServiceApplicationKt")
+	mainClass.set("com.mianeko.reservationservice.ReservationServiceApplicationKt")
 }
 
-tasks.withType<BootJar> {
-//    targetJavaVersion.set(JavaVersion.VERSION_17)
-	archiveClassifier.set("all")
-}
-
-tasks.named<Test>("test") {
-	useJUnitPlatform()
-	testLogging {
-		events("passed")
+tasks.withType<KotlinCompile> {
+	kotlinOptions {
+		freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
+		jvmTarget = "17"
+		languageVersion = "1.9"
 	}
+}
+
+tasks.withType<Test> {
+	useJUnitPlatform()
 }
