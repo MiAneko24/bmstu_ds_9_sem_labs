@@ -1,6 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 val log4jVersion: String by project
 val junitVersion: String by project
@@ -18,19 +16,8 @@ plugins {
     id("org.jetbrains.kotlin.plugin.spring") version "1.9.20"
 }
 
-group = "com.mianeko.loyaltyservice"
+group = "com.mianeko"
 version = "0.0.1-SNAPSHOT"
-
-kotlin {
-    jvmToolchain(17)
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
-    }
-}
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation("org.postgresql:postgresql:$postgresVersion")
@@ -53,14 +40,14 @@ application {
     mainClass.set("com.mianeko.loyaltyService.LoyaltyServiceApplicationKt")
 }
 
-tasks.withType<BootJar> {
-//    targetJavaVersion.set(JavaVersion.VERSION_17)
-    archiveClassifier.set("all")
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
+        jvmTarget = "17"
+        languageVersion = "1.9"
+    }
 }
 
-tasks.named<Test>("test") {
+tasks.withType<Test> {
     useJUnitPlatform()
-    testLogging {
-        events("passed")
-    }
 }

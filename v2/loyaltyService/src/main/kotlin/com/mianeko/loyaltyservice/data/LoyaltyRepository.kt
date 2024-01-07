@@ -3,18 +3,18 @@ package com.mianeko.loyaltyservice.data
 import com.mianeko.loyaltyservice.api.models.Loyalty
 import com.mianeko.loyaltyservice.data.exceptions.IncorrectLoyaltyDecrement
 import com.mianeko.loyaltyservice.data.models.LoyaltyEntity
+import com.mianeko.loyaltyservice.data.models.LoyaltyLevel
 import com.mianeko.loyaltyservice.data.models.loyalties
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.add
 import org.ktorm.entity.find
-import org.ktorm.entity.firstOrNull
 import org.ktorm.entity.toList
 import org.springframework.stereotype.Repository
 
 interface LoyaltyRepository {
     fun getAll(): List<Loyalty>
-    fun getForUser(username: String): Loyalty?
+    fun getForUser(username: String): Loyalty
     fun updateReservations(username: String, inc: Boolean): Loyalty
 }
 
@@ -30,8 +30,13 @@ class LoyaltyRepositoryImpl(
         return db.loyalties.toList().map(::mapper)
     }
 
-    override fun getForUser(username: String): Loyalty? {
-        return db.loyalties.find { it.username eq username }?.let { mapper(it) }
+    override fun getForUser(username: String): Loyalty {
+        var loyalty = db.loyalties.find { it.username eq username }
+        if (loyalty == null) {
+            loyalty = getNewLoyalty(username)
+            db.loyalties.add(loyalty)
+        }
+        return mapper(loyalty)
     }
 
     override fun updateReservations(username: String, inc: Boolean): Loyalty {
@@ -41,8 +46,27 @@ class LoyaltyRepositoryImpl(
         }
         val loyalty = currentLoyalty ?: getNewLoyalty(username)
         loyalty.reservationCount += if (inc) 1 else -1
+        loyalty.status = getCurrentLoyaltyLevel(loyalty.reservationCount)
+        loyalty.discount = getDiscountByLoyaltyLevel(loyalty.status)
+
         db.loyalties.add(loyalty)
         return mapper(loyalty)
+    }
+
+    private fun getCurrentLoyaltyLevel(reservationCount: Int): LoyaltyLevel {
+        return when {
+            reservationCount <= 10 -> LoyaltyLevel.BRONZE
+            reservationCount <= 20 -> LoyaltyLevel.SILVER
+            else -> LoyaltyLevel.GOLD
+        }
+    }
+
+    private fun getDiscountByLoyaltyLevel(loyaltyLevel: LoyaltyLevel): Int {
+        return when (loyaltyLevel) {
+            LoyaltyLevel.BRONZE -> 5
+            LoyaltyLevel.SILVER -> 7
+            LoyaltyLevel.GOLD -> 10
+        }
     }
 
     private fun getNewLoyalty(username: String) = LoyaltyEntity {
