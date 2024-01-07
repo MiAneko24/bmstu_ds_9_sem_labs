@@ -1,6 +1,4 @@
-package com.mianeko.loyaltyservice.api.models
-
-import com.mianeko.loyaltyservice.data.models.LoyaltyLevel
+package com.mianeko.common.loyalty
 
 data class Loyalty(
     var id: Int,

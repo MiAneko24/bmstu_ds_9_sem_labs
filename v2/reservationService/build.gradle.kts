@@ -20,6 +20,7 @@ group = "com.mianeko"
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
+	implementation(project(":common"))
 	implementation("org.postgresql:postgresql:$postgresVersion")
 
 	implementation("org.springframework.boot:spring-boot-starter")

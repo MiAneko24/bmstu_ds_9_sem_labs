@@ -1,4 +1,4 @@
-package com.mianeko.paymentservice.data.models
+package com.mianeko.common.payment
 
 enum class PaymentStatus(val text: String) {
     PAID("PAID"),

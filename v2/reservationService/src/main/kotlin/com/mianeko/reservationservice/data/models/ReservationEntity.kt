@@ -1,8 +1,9 @@
 package com.mianeko.reservationservice.data.models
 
+import com.mianeko.common.reservation.ReservationStatus
 import org.ktorm.entity.Entity
-import java.time.Instant
-import java.util.UUID
+import java.time.LocalDate
+import java.util.*
 
 interface ReservationEntity : Entity<ReservationEntity> {
     companion object : Entity.Factory<ReservationEntity>()
@@ -13,6 +14,6 @@ interface ReservationEntity : Entity<ReservationEntity> {
     var paymentUid: UUID
     var hotel: HotelEntity
     var status: ReservationStatus
-    var startDate: Instant
-    var endDate: Instant
+    var startDate: LocalDate
+    var endDate: LocalDate
 }

@@ -1,9 +1,6 @@
 package com.mianeko.reservationservice.data
 
-import com.mianeko.reservationservice.api.models.Hotel
-import com.mianeko.reservationservice.api.models.ShortHotelInfo
-import com.mianeko.reservationservice.api.models.ReservationInfo
-import com.mianeko.reservationservice.api.models.ReservationTemplate
+import com.mianeko.common.reservation.*
 import com.mianeko.reservationservice.data.models.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
@@ -12,7 +9,7 @@ import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.map
 import org.springframework.stereotype.Repository
-import java.util.UUID
+import java.util.*
 
 interface ReservationRepository {
     fun getAllHotels(page: Int, size: Int): List<Hotel>

@@ -14,7 +14,8 @@ COPY gateway ./gateway
 ENV JAVA_OPTS="-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 ENV GRADLE_OPTS="-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 
-RUN gradle :reservationService:bootJar \
+RUN gradle :common:bootJar \
+           :reservationService:bootJar \
            :loyaltyService:bootJar \
            :paymentService:bootJar \
            :gateway:bootJar \
@@ -29,6 +30,6 @@ EXPOSE 8080
 
 RUN mkdir /services
 
-CMD tail -f /dev/null
-#COPY --from=build /home/gradle/rsoi/${PROJECT}/build/libs/${PROJECT}-*-all.jar /app/app.jar
-#ENTRYPOINT ["java", "-jar", "-Djava.awt.headless=true", "-Dspring.profiles.active=prod", "/app/app.jar"]
+#CMD tail -f /dev/null
+COPY --from=build /home/gradle/rsoi/${PROJECT}/build/libs/${PROJECT}-*-all.jar /app/app.jar
+ENTRYPOINT ["java", "-jar", "-Djava.awt.headless=true", "-Dspring.profiles.active=prod", "/app/app.jar"]
