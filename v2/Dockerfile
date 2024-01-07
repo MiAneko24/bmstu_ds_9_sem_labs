@@ -6,6 +6,7 @@ COPY settings.gradle.kts ./
 COPY build.gradle.kts ./
 COPY gradle.properties ./
 
+COPY common ./common
 COPY reservationService ./reservationService
 COPY loyaltyService ./loyaltyService
 COPY paymentService ./paymentService
@@ -14,8 +15,7 @@ COPY gateway ./gateway
 ENV JAVA_OPTS="-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 ENV GRADLE_OPTS="-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
 
-RUN gradle :common:bootJar \
-           :reservationService:bootJar \
+RUN gradle :reservationService:bootJar \
            :loyaltyService:bootJar \
            :paymentService:bootJar \
            :gateway:bootJar \

@@ -29,13 +29,11 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.mockito:mockito-core")
-	implementation("org.ktorm:ktorm-core:$ktormVersion")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
-	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 }
