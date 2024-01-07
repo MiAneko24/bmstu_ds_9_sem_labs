@@ -38,7 +38,7 @@ dependencies {
 }
 
 application {
-	mainClass.set("com.mianeko.paymentService.PaymentServiceApplicationKt")
+	mainClass.set("com.mianeko.paymentservice.PaymentServiceApplicationKt")
 }
 
 tasks.withType<KotlinCompile> {
