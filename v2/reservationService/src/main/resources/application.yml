@@ -1,0 +1,14 @@
+server:
+  servlet:
+    context-path: /api/v1
+    application-display-name: reservation_service
+  forward-headers-strategy: framework
+spring:
+  servlet:
+    multipart:
+      resolve-lazily: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/reservations
+    username: reservation
+    password: reservation
+    driver-class-name: org.postgresql.Driver

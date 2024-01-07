@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: /api/v1
+    application-display-name: payment_service
+  forward-headers-strategy: framework
+spring:
+  servlet:
+    multipart:
+      resolve-lazily: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payments
+    username: payment
+    password: payment
+    driver-class-name: org.postgresql.Driver
+
