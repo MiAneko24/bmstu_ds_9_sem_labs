@@ -24,6 +24,8 @@ dependencies {
 	implementation("org.postgresql:postgresql:$postgresVersion")
 
 	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.mockito:mockito-core")
 	implementation("org.ktorm:ktorm-core:$ktormVersion")
