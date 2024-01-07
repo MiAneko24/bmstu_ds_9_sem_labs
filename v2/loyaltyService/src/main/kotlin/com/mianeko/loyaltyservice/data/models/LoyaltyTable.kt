@@ -1,5 +1,6 @@
 package com.mianeko.loyaltyservice.data.models
 
+import com.mianeko.common.loyalty.LoyaltyLevel
 import org.ktorm.database.Database
 import org.ktorm.entity.sequenceOf
 import org.ktorm.schema.Table

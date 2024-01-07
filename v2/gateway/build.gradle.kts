@@ -21,6 +21,7 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
+	implementation(project(":common"))
 	implementation("org.postgresql:postgresql:$postgresVersion")
 
 	implementation("org.springframework.boot:spring-boot-starter")

@@ -1,9 +1,9 @@
 package com.mianeko.loyaltyservice.data
 
-import com.mianeko.loyaltyservice.api.models.Loyalty
+import com.mianeko.common.loyalty.Loyalty
+import com.mianeko.common.loyalty.LoyaltyLevel
 import com.mianeko.loyaltyservice.data.exceptions.IncorrectLoyaltyDecrement
 import com.mianeko.loyaltyservice.data.models.LoyaltyEntity
-import com.mianeko.loyaltyservice.data.models.LoyaltyLevel
 import com.mianeko.loyaltyservice.data.models.loyalties
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq

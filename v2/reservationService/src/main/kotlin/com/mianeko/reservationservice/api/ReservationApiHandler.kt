@@ -1,8 +1,8 @@
 package com.mianeko.reservationservice.api
 
-import com.mianeko.reservationservice.api.models.Hotel
-import com.mianeko.reservationservice.api.models.ReservationInfo
-import com.mianeko.reservationservice.api.models.ReservationTemplate
+import com.mianeko.common.reservation.Hotel
+import com.mianeko.common.reservation.ReservationInfo
+import com.mianeko.common.reservation.ReservationTemplate
 import com.mianeko.reservationservice.data.HotelNotExistException
 import com.mianeko.reservationservice.data.ReservationCreationException
 import com.mianeko.reservationservice.data.ReservationRepository
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
-@RequestMapping("/reservation_service/")
 class ReservationApiHandler(
     private val reservationRepository: ReservationRepository
 ) {

@@ -1,9 +1,9 @@
 package com.mianeko.paymentservice.data
 
-import com.mianeko.paymentservice.api.models.Payment
-import com.mianeko.paymentservice.api.models.PaymentTemplate
+import com.mianeko.common.payment.Payment
+import com.mianeko.common.payment.PaymentStatus
+import com.mianeko.common.payment.PaymentTemplate
 import com.mianeko.paymentservice.data.exceptions.PaymentCreationException
-import com.mianeko.paymentservice.data.models.PaymentStatus
 import com.mianeko.paymentservice.data.models.PaymentsEntity
 import com.mianeko.paymentservice.data.models.payments
 import org.ktorm.database.Database
@@ -12,7 +12,7 @@ import org.ktorm.entity.add
 import org.ktorm.entity.find
 import org.ktorm.entity.toList
 import org.springframework.stereotype.Repository
-import java.util.UUID
+import java.util.*
 
 interface PaymentRepository {
     fun getAll(): List<Payment>

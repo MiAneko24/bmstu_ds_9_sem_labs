@@ -1,4 +1,4 @@
-package com.mianeko.reservationservice.data.models
+package com.mianeko.common.reservation
 
 enum class ReservationStatus(val text: String) {
     PAID("PAID"),

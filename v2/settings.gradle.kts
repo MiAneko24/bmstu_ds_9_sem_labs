@@ -7,6 +7,7 @@ pluginManagement {
 }
 
 include(
+    "common",
     "reservationService",
     "paymentService",
     "loyaltyService",

@@ -1,15 +1,15 @@
 package com.mianeko.paymentservice.api
 
-import com.mianeko.paymentservice.api.models.Payment
-import com.mianeko.paymentservice.api.models.PaymentTemplate
+import com.mianeko.common.payment.Payment
+import com.mianeko.common.payment.PaymentTemplate
 import com.mianeko.paymentservice.data.PaymentRepository
 import com.mianeko.paymentservice.data.exceptions.PaymentCreationException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import java.util.UUID
+import java.util.*
 
 @RestController
-@RequestMapping("/payment")
+@RequestMapping("/payments")
 class PaymentApiHandler (
     private val paymentRepository: PaymentRepository
 ){

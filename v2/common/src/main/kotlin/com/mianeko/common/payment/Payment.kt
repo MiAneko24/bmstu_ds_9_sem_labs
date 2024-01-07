@@ -1,6 +1,5 @@
-package com.mianeko.paymentservice.api.models
+package com.mianeko.common.payment
 
-import com.mianeko.paymentservice.data.models.PaymentStatus
 import java.util.*
 
 data class Payment(

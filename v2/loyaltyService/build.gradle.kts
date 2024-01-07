@@ -20,6 +20,7 @@ group = "com.mianeko"
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
+    implementation(project(":common"))
     implementation("org.postgresql:postgresql:$postgresVersion")
 
     implementation("org.springframework.boot:spring-boot-starter")
@@ -28,7 +29,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.mockito:mockito-core")
     implementation("org.ktorm:ktorm-core:$ktormVersion")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -37,7 +37,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.mianeko.loyaltyService.LoyaltyServiceApplicationKt")
+    mainClass.set("com.mianeko.loyaltyservice.LoyaltyServiceApplicationKt")
 }
 
 tasks.withType<KotlinCompile> {

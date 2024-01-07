@@ -1,5 +1,6 @@
 package com.mianeko.loyaltyservice.data.models
 
+import com.mianeko.common.loyalty.LoyaltyLevel
 import org.ktorm.entity.Entity
 
 interface LoyaltyEntity: Entity<LoyaltyEntity> {

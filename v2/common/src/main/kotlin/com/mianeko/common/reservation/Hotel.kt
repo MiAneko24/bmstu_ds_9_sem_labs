@@ -1,4 +1,4 @@
-package com.mianeko.gateway.api.models
+package com.mianeko.common.reservation
 
 import java.util.*
 

@@ -1,4 +1,4 @@
-package com.mianeko.loyaltyservice.data.models
+package com.mianeko.common.loyalty
 
 enum class LoyaltyLevel(val text: String) {
     BRONZE("BRONZE"),

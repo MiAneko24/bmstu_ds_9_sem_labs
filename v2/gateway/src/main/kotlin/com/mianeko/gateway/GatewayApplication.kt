@@ -2,8 +2,10 @@ package com.mianeko.gateway
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.openfeign.EnableFeignClients
 
 @SpringBootApplication
+@EnableFeignClients
 class GatewayApplication
 
 fun main(args: Array<String>) {
