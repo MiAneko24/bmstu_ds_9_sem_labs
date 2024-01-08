@@ -1,7 +1,6 @@
 package com.mianeko.gateway.api
 
 import com.mianeko.common.payment.PaymentTemplate
-import com.mianeko.common.reservation.ReservationInfo
 import com.mianeko.common.reservation.ReservationTemplate
 import com.mianeko.gateway.api.clients.LoyaltyClient
 import com.mianeko.gateway.api.clients.PaymentClient
@@ -10,17 +9,11 @@ import com.mianeko.gateway.api.models.BookReservationInfo
 import com.mianeko.gateway.api.models.PaidReservationInfo
 import com.mianeko.gateway.api.models.ShortPaymentInfo
 import com.mianeko.gateway.api.models.ShortReservationTemplate
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/reservations")
@@ -29,6 +22,8 @@ class ReservationsApiHandler(
     private val paymentClient: PaymentClient,
     private val loyaltyClient: LoyaltyClient
 ) {
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
+
     @GetMapping
     fun getReservationForUser(
         @RequestHeader("X-User-Name") username: String
@@ -56,9 +51,12 @@ class ReservationsApiHandler(
         @RequestHeader("X-User-Name") username: String,
         @RequestBody template: ShortReservationTemplate
     ): BookReservationInfo {
+        log.info("Got reserve request from $username with data $template")
         val reserveDays = template.startDate.until(template.endDate).days
+        log.info("Reserve days are $reserveDays")
         val loyalty = loyaltyClient.getLoyaltyForUser(username)
-        val price = reservationClient.getHotelPrice(template.hotelUid) * reserveDays * (1 - loyalty.discount / 100)
+        val price = reservationClient.getHotelPrice(template.hotelUid) * reserveDays * (1 - (loyalty.discount / 100))
+        log.info("Price is {}", price)
 
         val payment = paymentClient.create(PaymentTemplate(price))
 
@@ -73,6 +71,7 @@ class ReservationsApiHandler(
                 username = username
             )
         )
+        log.info("Created book = $createdBook")
 
         return BookReservationInfo(
             reservationUid = createdBook.reservationUid,

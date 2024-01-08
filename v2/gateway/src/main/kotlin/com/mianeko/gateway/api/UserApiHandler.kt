@@ -7,6 +7,8 @@ import com.mianeko.gateway.api.models.PaidReservationInfo
 import com.mianeko.gateway.api.models.ShortLoyaltyInfo
 import com.mianeko.gateway.api.models.ShortPaymentInfo
 import com.mianeko.gateway.api.models.UserInfo
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,10 +22,12 @@ class UserApiHandler(
     private val paymentClient: PaymentClient
 ) {
 
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
     @GetMapping
     fun getUserInfo(
         @RequestHeader("X-User-Name") username: String
     ): UserInfo {
+        log.info("Got user info request for user $username")
         val reservations = reservationClient
             .getInfoByUserId(username)
             .map { reservation ->
@@ -40,6 +44,7 @@ class UserApiHandler(
                     )
                 )
             }
+        log.info("Reservations are $reservations")
         val loyalty = loyaltyClient
             .getLoyaltyForUser(username)
             .let {
@@ -48,6 +53,7 @@ class UserApiHandler(
                     discount = it.discount
                 )
             }
+        log.info("Loyalty is {}", loyalty)
         return UserInfo(reservations, loyalty)
     }
 }

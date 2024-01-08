@@ -45,7 +45,7 @@ class ReservationRepositoryImpl(
     }
 
     override fun getAllHotels(page: Int, size: Int): List<Hotel> {
-        return db.from(HotelTable).select().limit(page * size - 1, size).mapNotNull {
+        return db.from(HotelTable).select().limit((page - 1) * size - 1, size).mapNotNull {
             val hotelUid = it[HotelTable.hotelUid]
             val name = it[HotelTable.name]
             val country = it[HotelTable.country]
