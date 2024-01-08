@@ -10,7 +10,7 @@ import java.util.*
 
 @FeignClient(value = "reservationService", url = "\${custom.services.reservation}")
 interface ReservationClient {
-    @GetMapping("/hotels/")
+    @GetMapping("/hotels")
     fun getAllHotels(
         @RequestParam page: Int,
         @RequestParam size: Int

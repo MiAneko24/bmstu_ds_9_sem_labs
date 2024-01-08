@@ -15,7 +15,7 @@ class ReservationApiHandler(
     private val reservationRepository: ReservationRepository
 ) {
 
-    @GetMapping("/hotels/")
+    @GetMapping("/hotels")
     fun getAllHotels(
         @RequestParam page: Int,
         @RequestParam size: Int
