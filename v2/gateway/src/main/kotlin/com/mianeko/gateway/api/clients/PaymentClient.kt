@@ -12,7 +12,7 @@ interface PaymentClient {
     @GetMapping
     fun getPayments(): List<Payment>
 
-    @GetMapping
+    @GetMapping("/{uuid}")
     fun getPaymentById(
         @PathVariable uuid: UUID
     ): Payment
