@@ -1,5 +1,6 @@
 package com.mianeko.loyaltyservice.api
 
+import com.mianeko.common.exceptions.ReservationsNotFound
 import com.mianeko.common.loyalty.Loyalty
 import com.mianeko.loyaltyservice.data.LoyaltyRepository
 import com.mianeko.loyaltyservice.data.exceptions.IncorrectLoyaltyDecrement
