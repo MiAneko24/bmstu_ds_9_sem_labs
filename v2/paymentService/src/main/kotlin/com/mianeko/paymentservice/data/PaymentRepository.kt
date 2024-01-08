@@ -11,6 +11,8 @@ import org.ktorm.dsl.eq
 import org.ktorm.entity.add
 import org.ktorm.entity.find
 import org.ktorm.entity.toList
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -25,6 +27,7 @@ interface PaymentRepository {
 class PaymentRepositoryImpl(
     private val db: Database
 ): PaymentRepository {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
     private fun mapper(entity: PaymentsEntity): Payment {
         return Payment(entity.id, entity.paymentUid, entity.status, entity.price)
     }
@@ -49,11 +52,13 @@ class PaymentRepositoryImpl(
 
     override fun create(paymentTemplate: PaymentTemplate): Payment {
         val uuid = UUID.randomUUID()
+        log.info("template is ${paymentTemplate.price}")
         val paymentEntity = PaymentsEntity {
             this.paymentUid = uuid
             this.price = paymentTemplate.price
             this.status = PaymentStatus.PAID
         }
+        log.info("Generated payment entity is $paymentEntity")
         db.payments.add(paymentEntity)
         return get(uuid) ?: throw PaymentCreationException()
     }

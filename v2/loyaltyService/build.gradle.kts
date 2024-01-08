@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val log4jVersion: String by project
 val junitVersion: String by project
+val jacksonVersion: String by project
 val postgresVersion: String by project
 val ktormVersion: String by project
 
@@ -22,6 +23,12 @@ version = "0.0.1-SNAPSHOT"
 dependencies {
     implementation(project(":common"))
     implementation("org.postgresql:postgresql:$postgresVersion")
+
+    api("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
+    api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    api("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
