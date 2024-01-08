@@ -1,5 +1,7 @@
 package com.mianeko.paymentservice.api
 
+import com.mianeko.common.exceptions.PaymentCreationApiException
+import com.mianeko.common.exceptions.PaymentNotFound
 import com.mianeko.common.payment.Payment
 import com.mianeko.common.payment.PaymentTemplate
 import com.mianeko.paymentservice.data.PaymentRepository

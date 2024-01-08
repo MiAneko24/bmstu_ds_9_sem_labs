@@ -1,5 +1,8 @@
 package com.mianeko.reservationservice.api
 
+import com.mianeko.common.exceptions.HotelNotFoundApiException
+import com.mianeko.common.exceptions.ReservationCreationApiException
+import com.mianeko.common.exceptions.ReservationNotFoundApiException
 import com.mianeko.common.reservation.Hotel
 import com.mianeko.common.reservation.ReservationInfo
 import com.mianeko.common.reservation.ReservationTemplate
@@ -37,7 +40,7 @@ class ReservationApiHandler(
         try {
             return reservationRepository.getPriceByHotelId(uuid)
         } catch (e: HotelNotExistException) {
-            throw HotelNotFoundApiException(e.message)
+            throw HotelNotFoundApiException(uuid, e.message)
         }
     }
 
@@ -50,6 +53,8 @@ class ReservationApiHandler(
             return reservationRepository.createReservation(reservationTemplate)
         } catch (e: ReservationCreationException) {
             throw ReservationCreationApiException()
+        } catch (e: HotelNotExistException) {
+            throw HotelNotFoundApiException(reservationTemplate.hotelUid, e.message)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.mianeko.reservationservice.api
+package com.mianeko.common.exceptions
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -10,7 +10,8 @@ open class ReservationApiException(
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Hotel was not found")
 class HotelNotFoundApiException(
-    override val message: String? = "Could not find hotel with id"
+    val id: UUID,
+    override val message: String? = "Could not find hotel with id $id"
 ) : ReservationApiException(message)
 
 @ResponseStatus(code = HttpStatus.TOO_MANY_REQUESTS)
