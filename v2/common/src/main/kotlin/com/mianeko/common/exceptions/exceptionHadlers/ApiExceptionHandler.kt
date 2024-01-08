@@ -1,4 +1,4 @@
-package com.mianeko.gateway.api.exceptionHadlers
+package com.mianeko.common.exceptions.exceptionHadlers
 
 import com.mianeko.common.exceptions.*
 import com.mianeko.common.exceptions.models.ErrorDescription

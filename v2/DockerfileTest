@@ -1,0 +1,19 @@
+FROM gradle:7.6.0-jdk17-jammy AS build
+
+WORKDIR /home/gradle/rsoi
+
+COPY settings.gradle.kts ./
+COPY build.gradle.kts ./
+COPY gradle.properties ./
+
+COPY common ./common
+COPY reservationService ./reservationService
+COPY loyaltyService ./loyaltyService
+COPY paymentService ./paymentService
+COPY gateway ./gatewayService
+
+ENV JAVA_OPTS="-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+ENV GRADLE_OPTS="-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+
+#CMD tail -f /dev/null
+RUN gradle test
