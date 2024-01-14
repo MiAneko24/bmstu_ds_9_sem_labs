@@ -29,7 +29,7 @@ jobs:
         run: cd v2 && docker build . -t tests-ds -f ./DockerfileTests && docker run tests-ds ; cd ..
 
       - name: Run containers
-        timeout-minutes: 5
+        timeout-minutes: 10
         run: |
           docker compose up -d
           ./scripts/wait-script.sh
