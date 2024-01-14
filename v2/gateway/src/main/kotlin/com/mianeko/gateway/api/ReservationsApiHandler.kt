@@ -1,5 +1,6 @@
 package com.mianeko.gateway.api
 
+import com.mianeko.common.exceptions.HotelNotFoundApiException
 import com.mianeko.common.payment.PaymentTemplate
 import com.mianeko.common.reservation.ReservationTemplate
 import com.mianeko.gateway.api.clients.LoyaltyClient
@@ -51,40 +52,45 @@ class ReservationsApiHandler(
         @RequestHeader("X-User-Name") username: String,
         @RequestBody template: ShortReservationTemplate
     ): BookReservationInfo {
-        log.info("Got reserve request from $username with data $template")
-        val reserveDays = template.startDate.until(template.endDate).days
-        log.info("Reserve days are $reserveDays")
-        val loyalty = loyaltyClient.getLoyaltyForUser(username)
-        val price = reservationClient.getHotelPrice(template.hotelUid) * reserveDays * (1 - (loyalty.discount / 100))
-        log.info("Price is {}", price)
+        try {
+            log.info("Got reserve request from $username with data $template")
+            val reserveDays = template.startDate.until(template.endDate).days
+            log.info("Reserve days are $reserveDays")
+            val loyalty = loyaltyClient.getLoyaltyForUser(username)
+            val price = reservationClient.getHotelPrice(template.hotelUid) * reserveDays * (1 - (loyalty.discount / 100))
+            log.info("Price is {}", price)
 
-        val payment = paymentClient.create(PaymentTemplate(price))
+            val payment = paymentClient.create(PaymentTemplate(price))
 
-        loyaltyClient.incrementReservations(username)
+            loyaltyClient.incrementReservations(username)
 
-        val createdBook = reservationClient.createReservation(
-            ReservationTemplate(
-                hotelUid = template.hotelUid,
-                startDate = template.startDate,
-                endDate = template.endDate,
-                paymentUid = payment.paymentUid,
-                username = username
+            val createdBook = reservationClient.createReservation(
+                ReservationTemplate(
+                    hotelUid = template.hotelUid,
+                    startDate = template.startDate,
+                    endDate = template.endDate,
+                    paymentUid = payment.paymentUid,
+                    username = username
+                )
             )
-        )
-        log.info("Created book = $createdBook")
+            log.info("Created book = $createdBook")
 
-        return BookReservationInfo(
-            reservationUid = createdBook.reservationUid,
-            hotelUid = createdBook.hotel.hotelUid,
-            startDate = createdBook.startDate,
-            endDate = createdBook.endDate,
-            discount = loyalty.discount,
-            status = createdBook.status,
-            payment = ShortPaymentInfo(
-                status = payment.status,
-                price = payment.price
+            return BookReservationInfo(
+                reservationUid = createdBook.reservationUid,
+                hotelUid = createdBook.hotel.hotelUid,
+                startDate = createdBook.startDate,
+                endDate = createdBook.endDate,
+                discount = loyalty.discount,
+                status = createdBook.status,
+                payment = ShortPaymentInfo(
+                    status = payment.status,
+                    price = payment.price
+                )
             )
-        )
+        } catch (e: Exception) {
+            log.info("got an exception ${e.message}, ${e.stackTrace}")
+            throw HotelNotFoundApiException(template.hotelUid)
+        }
     }
 
     @GetMapping("/{reservationUid}")
