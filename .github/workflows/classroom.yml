@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - master
+      - lab_02_on_kotlin
   pull_request:
     branches:
       - master
+      - lab_02_on_kotlin
 jobs:
   build:
     name: Autograding
@@ -19,9 +21,12 @@ jobs:
 
       # TODO build and run unit tests
 
-      - name: Build images
-        timeout-minutes: 10
+      - name: Creates docker images
+        timeout-minutes: 5
         run: docker compose build
+
+      - name: Run unit tests
+        run: cd backend && docker build . -t tests-ds -f ./DockerfileTests && docker run tests-ds ; cd ..
 
       - name: Run containers
         timeout-minutes: 5
@@ -34,9 +39,8 @@ jobs:
       - name: Run API Tests
         uses: matt-ball/newman-action@master
         with:
-          # TODO insert your variant
-          collection: <variant>/postman/collection.json
-          environment: <variant>/postman/environment.json
+          collection: v2/postman/collection.json
+          environment: v2/postman/environment.json
           delayRequest: 100
           reporters: '[ "cli" ]'
 
@@ -45,6 +49,7 @@ jobs:
         continue-on-error: true
 
       - name: Github auto grader mark
+        continue-on-error: true
         uses: Romanow/google-sheet-autograder-marker@v1.0
         with:
           google_token: ${{secrets.GOOGLE_API_KEY}}
