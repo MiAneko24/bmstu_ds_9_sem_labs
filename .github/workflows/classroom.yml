@@ -26,7 +26,7 @@ jobs:
         run: docker compose build
 
       - name: Run unit tests
-        run: cd v2 && docker build . -t tests-ds -f ./DockerfileTests && docker run tests-ds ; cd ..
+        run: cd v2 && docker build . -t tests-ds -f ./v2/DockerfileTests && docker run tests-ds ; cd ..
 
       - name: Run containers
         timeout-minutes: 10
