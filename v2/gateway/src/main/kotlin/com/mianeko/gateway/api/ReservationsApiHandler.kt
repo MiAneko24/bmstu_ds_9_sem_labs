@@ -1,5 +1,6 @@
 package com.mianeko.gateway.api
 
+import com.mianeko.common.exceptions.HotelNotFoundApiException
 import com.mianeko.common.payment.PaymentTemplate
 import com.mianeko.common.reservation.ReservationTemplate
 import com.mianeko.gateway.api.clients.LoyaltyClient
@@ -55,7 +56,11 @@ class ReservationsApiHandler(
         val reserveDays = template.startDate.until(template.endDate).days
         log.info("Reserve days are $reserveDays")
         val loyalty = loyaltyClient.getLoyaltyForUser(username)
-        val fullPrice = reservationClient.getHotelPrice(template.hotelUid) * reserveDays
+        val fullPrice = try {
+            reservationClient.getHotelPrice(template.hotelUid) * reserveDays
+        } catch (e: Exception) {
+            throw HotelNotFoundApiException(template.hotelUid)
+        }
         val price = fullPrice - fullPrice * loyalty.discount / 100
         log.info("Price is {}", price)
 

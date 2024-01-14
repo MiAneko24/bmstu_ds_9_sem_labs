@@ -102,7 +102,7 @@ class ReservationRepositoryImpl(
             .find { it.reservationUid eq reservationUid }
             ?.let {
                 it.apply {
-                    status = ReservationStatus.CANCELLED
+                    status = ReservationStatus.CANCELED
                     flushChanges()
                 }
             }
