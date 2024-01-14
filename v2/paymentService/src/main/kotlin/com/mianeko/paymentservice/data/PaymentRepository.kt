@@ -44,7 +44,7 @@ class PaymentRepositoryImpl(
             .find { it.paymentUid eq uuid }
             ?.let {
                 it.apply {
-                    status = PaymentStatus.CANCELLED
+                    status = PaymentStatus.CANCELED
                     flushChanges()
                 }
             }
