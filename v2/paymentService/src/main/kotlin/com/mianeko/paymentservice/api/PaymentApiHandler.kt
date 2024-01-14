@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
-@RequestMapping("/payments")
+@RequestMapping("/api/v1/payments")
 class PaymentApiHandler (
     private val paymentRepository: PaymentRepository
 ){

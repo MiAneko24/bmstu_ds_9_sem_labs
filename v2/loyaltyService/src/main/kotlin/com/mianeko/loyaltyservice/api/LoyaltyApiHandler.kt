@@ -7,7 +7,7 @@ import com.mianeko.loyaltyservice.data.exceptions.IncorrectLoyaltyDecrement
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/loyalties")
+@RequestMapping("/api/v1/loyalties")
 class LoyaltyApiHandler(
     private val loyaltyRepository: LoyaltyRepository
 ) {

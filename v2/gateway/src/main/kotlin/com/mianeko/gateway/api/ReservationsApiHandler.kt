@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
-@RequestMapping("/reservations")
+@RequestMapping("/api/v1/reservations")
 class ReservationsApiHandler(
     private val reservationClient: ReservationClient,
     private val paymentClient: PaymentClient,

@@ -1,6 +1,5 @@
 server:
   servlet:
-    context-path: /api/v1
     application-display-name: payment_service
   forward-headers-strategy: framework
 spring:

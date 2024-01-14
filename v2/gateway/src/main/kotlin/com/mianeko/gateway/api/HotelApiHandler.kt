@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/hotels")
+@RequestMapping("/api/v1/hotels")
 class HotelApiHandler(
     private val reservationClient: ReservationClient
 ) {

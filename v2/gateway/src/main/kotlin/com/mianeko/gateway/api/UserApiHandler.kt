@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/me")
+@RequestMapping("/api/v1/me")
 class UserApiHandler(
     private val reservationClient: ReservationClient,
     private val loyaltyClient: LoyaltyClient,
