@@ -3,6 +3,7 @@ package com.mianeko.loyaltyservice.data
 import com.mianeko.common.loyalty.Loyalty
 import com.mianeko.common.loyalty.LoyaltyLevel
 import com.mianeko.loyaltyservice.data.exceptions.IncorrectLoyaltyDecrement
+import com.mianeko.loyaltyservice.data.exceptions.LoyaltyCreationException
 import com.mianeko.loyaltyservice.data.models.LoyaltyEntity
 import com.mianeko.loyaltyservice.data.models.loyalties
 import org.ktorm.database.Database
@@ -45,11 +46,12 @@ class LoyaltyRepositoryImpl(
             throw IncorrectLoyaltyDecrement(username)
         }
         val loyalty = currentLoyalty ?: getNewLoyalty(username)
-        loyalty.reservationCount += if (inc) 1 else -1
-        loyalty.status = getCurrentLoyaltyLevel(loyalty.reservationCount)
-        loyalty.discount = getDiscountByLoyaltyLevel(loyalty.status)
-
-        db.loyalties.add(loyalty)
+        loyalty.apply {
+            reservationCount += if (inc) 1 else -1
+            status = getCurrentLoyaltyLevel(loyalty.reservationCount)
+            discount = getDiscountByLoyaltyLevel(loyalty.status)
+            flushChanges()
+        }
         return mapper(loyalty)
     }
 
@@ -69,9 +71,14 @@ class LoyaltyRepositoryImpl(
         }
     }
 
-    private fun getNewLoyalty(username: String) = LoyaltyEntity {
-        this.username = username
-        this.reservationCount = 0
-        this.discount = 0
+    private fun getNewLoyalty(username: String): LoyaltyEntity {
+        val newLoyalty = LoyaltyEntity {
+            this.username = username
+            this.reservationCount = 0
+            this.discount = 0
+            this.status = LoyaltyLevel.BRONZE
+        }
+        db.loyalties.add(newLoyalty)
+        return db.loyalties.find { it.username eq username } ?: throw LoyaltyCreationException()
     }
 }

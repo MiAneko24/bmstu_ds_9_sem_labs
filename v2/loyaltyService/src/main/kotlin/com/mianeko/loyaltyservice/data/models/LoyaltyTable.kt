@@ -9,7 +9,7 @@ import org.ktorm.schema.int
 import org.ktorm.schema.varchar
 
 object LoyaltyTable: Table<LoyaltyEntity>("loyalty", schema = "loyalties") {
-    val id = int("id").bindTo { it.id }
+    val id = int("id").bindTo { it.id }.primaryKey()
     val username = varchar("username").bindTo { it.username }
     val reservationCount = int("reservation_count").bindTo { it.reservationCount }
     val status = enum<LoyaltyLevel>("status").bindTo { it.status }
