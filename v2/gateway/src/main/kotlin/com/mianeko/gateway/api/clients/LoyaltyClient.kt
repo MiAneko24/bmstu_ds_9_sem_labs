@@ -105,6 +105,6 @@ class LoyaltyClientFallback: LoyaltyClient {
     }
 
     companion object {
-        private const val SERVICE_NOT_AVAILABLE_MESSAGE = "Loyalty service is not available"
+        private const val SERVICE_NOT_AVAILABLE_MESSAGE = "Loyalty Service unavailable"
     }
 }

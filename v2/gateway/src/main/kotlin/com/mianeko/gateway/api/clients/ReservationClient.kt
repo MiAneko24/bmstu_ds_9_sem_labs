@@ -88,6 +88,6 @@ class ReservationClientFallback: ReservationClient {
     }
 
     companion object {
-        private const val SERVICE_NOT_AVAILABLE_MESSAGE = "Reservation service is not available"
+        private const val SERVICE_NOT_AVAILABLE_MESSAGE = "Reservation Service unavailable"
     }
 }
