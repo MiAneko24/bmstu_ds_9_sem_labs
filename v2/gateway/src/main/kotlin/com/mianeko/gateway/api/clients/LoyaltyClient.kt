@@ -44,7 +44,7 @@ interface LoyaltyClient {
 
     @GetMapping("/user_info/{username}")
     fun getLoyaltyForUserWithFallback(
-            @PathVariable username: String
+        @PathVariable username: String
     ): Loyalty?
 
     @PostMapping("/actions/increment_reservations_count/{username}")

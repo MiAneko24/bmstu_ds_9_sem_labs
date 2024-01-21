@@ -52,6 +52,7 @@ class RabbitMQConfiguration {
     fun requestsQueue(
         @Value("\${rabbitmq.queues.requests}") name: String,
     ): Queue {
+        logger.info("Request for queue $name")
         return Queue(name)
     }
 
@@ -59,6 +60,7 @@ class RabbitMQConfiguration {
     fun requestsExchange(
         @Value("\${rabbitmq.exchanges.requests}") name: String,
     ): Exchange {
+        logger.info("Request for exchange $name")
         return DirectExchange(name)
     }
 }

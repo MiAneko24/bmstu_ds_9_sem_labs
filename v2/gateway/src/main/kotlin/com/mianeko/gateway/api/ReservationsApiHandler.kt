@@ -63,6 +63,7 @@ class ReservationsApiHandler(
         }
         log.info("Reserve days are $reserveDays")
         val loyalty = loyaltyClient.getLoyaltyForUser(username)
+        log.info("Got loyalty $loyalty")
         val price = fullPrice - fullPrice * loyalty.discount / 100
         log.info("Price is {}", price)
 
@@ -126,7 +127,8 @@ class ReservationsApiHandler(
         val reservation = reservationClient.getReservationInfo(reservationUid)
         paymentClient.deleteById(reservation.paymentUid)
         loyaltyClient.decrementReservationsWithRetry(username) {
-           requestSender.sendRequest(RabbitMqRequest.LoyaltyDecrementReservationsRequest(username))
+            log.info("Fallback for decrementReservationsWithRetry")
+            requestSender.sendRequest(RabbitMqRequest.LoyaltyDecrementReservationsRequest(username))
         }
     }
 }

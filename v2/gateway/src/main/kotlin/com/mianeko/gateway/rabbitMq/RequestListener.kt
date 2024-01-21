@@ -22,12 +22,15 @@ class RequestListener(
 
     private fun processMessage(message: Message) {
         when (val request = objectMapper.readValue<RabbitMqRequest>(message.body)) {
-            is RabbitMqRequest.LoyaltyDecrementReservationsRequest -> loyaltyClient.decrementReservationsWithRetry(
-                request.username
-            ) {
-                log.warn("Couldn't process retry to loyalty service, waiting 10s, won't ack message")
-                Thread.sleep(RETRY_TIMEOUT_MS)
-                throw ServiceNotAvailableApiException("Can't process retry request to LoyaltyService")
+            is RabbitMqRequest.LoyaltyDecrementReservationsRequest -> {
+                log.info("Got message $request")
+                loyaltyClient.decrementReservationsWithRetry(
+                    request.username
+                ) {
+                    log.warn("Couldn't process retry to loyalty service, waiting 10s, won't ack message")
+                    Thread.sleep(RETRY_TIMEOUT_MS)
+                    throw ServiceNotAvailableApiException("Can't process retry request to LoyaltyService")
+                }
             }
         }
     }
