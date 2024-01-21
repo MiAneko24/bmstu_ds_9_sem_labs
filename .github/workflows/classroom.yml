@@ -4,10 +4,12 @@ on:
     branches:
       - master
       - lab_02_on_kotlin
+      - lab_03_on_kotlin
   pull_request:
     branches:
       - master
       - lab_02_on_kotlin
+      - lab_03_on_kotlin
 jobs:
   build:
     name: Autograding
@@ -26,7 +28,7 @@ jobs:
         run: docker compose build
 
       - name: Run unit tests
-        run:  docker compose up -d hotels-reservation-db && cd v2 && docker build . -t tests-ds -f ./DockerfileTest && docker run tests-ds ; cd ..
+        run: cd v2 && docker build . -t tests-ds -f ./DockerfileTest && docker run tests-ds ; cd ..
 
       - name: Run containers
         timeout-minutes: 10
@@ -37,27 +39,27 @@ jobs:
           WAIT_PORTS: 8080,8070,8060,8050
 
       - name: Run API Tests
-        uses: matt-ball/newman-action@master
-        with:
-          collection: v2/postman/collection.json
-          environment: v2/postman/environment.json
-          delayRequest: 100
-          reporters: '[ "cli" ]'
+        timeout-minutes: 5
+        run: ./scripts/test-script.sh
+        env:
+          VARIANT: v2
+          SERVICE_NAME: loyalty-service
+          PORT_NUMBER: 8050
 
       - uses: education/autograding@v1
         id: autograder
         continue-on-error: true
 
-      - name: Github auto grader mark
-        continue-on-error: true
-        uses: Romanow/google-sheet-autograder-marker@v1.0
-        with:
-          google_token: ${{secrets.GOOGLE_API_KEY}}
-          sheet_id: "1xkgjUX6Qmk7rdJG-QPOToav-HWWtthJjnShIKnw3oIY"
-          homework_number: 2
-          user_column: 'D'
-          column_offset: 'F'
-          mark: "'+"
+#      - name: Github auto grader mark
+#        continue-on-error: true
+#        uses: Romanow/google-sheet-autograder-marker@v1.0
+#        with:
+#          google_token: ${{secrets.GOOGLE_API_KEY}}
+#          sheet_id: "1xkgjUX6Qmk7rdJG-QPOToav-HWWtthJjnShIKnw3oIY"
+#          homework_number: 2
+#          user_column: 'D'
+#          column_offset: 'F'
+#          mark: "'+"
 
       - name: Stop containers
         if: always()
