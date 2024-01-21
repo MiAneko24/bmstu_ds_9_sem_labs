@@ -1,6 +1,8 @@
 package com.mianeko.gateway.api
 
 import com.mianeko.gateway.api.clients.LoyaltyClient
+import com.mianeko.gateway.api.models.BaseFullLoyaltyInfo
+import com.mianeko.gateway.api.models.EmptyFullLoyaltyInfo
 import com.mianeko.gateway.api.models.FullLoyaltyInfo
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
@@ -15,13 +17,13 @@ class LoyaltyApiHandler(
     @GetMapping
     fun getLoyaltyInfo(
         @RequestHeader("X-User-Name") username: String
-    ): FullLoyaltyInfo {
-        return loyaltyClient.getLoyaltyForUser(username).let {
+    ): BaseFullLoyaltyInfo {
+        return loyaltyClient.getLoyaltyForUserWithFallback(username)?.let {
             FullLoyaltyInfo(
                 status = it.status,
                 discount = it.discount,
                 reservationCount = it.reservationCount
             )
-        }
+        } ?: EmptyFullLoyaltyInfo
     }
 }

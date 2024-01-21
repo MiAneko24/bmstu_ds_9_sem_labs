@@ -6,10 +6,7 @@ import com.mianeko.common.reservation.ReservationTemplate
 import com.mianeko.gateway.api.clients.LoyaltyClient
 import com.mianeko.gateway.api.clients.PaymentClient
 import com.mianeko.gateway.api.clients.ReservationClient
-import com.mianeko.gateway.api.models.BookReservationInfo
-import com.mianeko.gateway.api.models.PaidReservationInfo
-import com.mianeko.gateway.api.models.ShortPaymentInfo
-import com.mianeko.gateway.api.models.ShortReservationTemplate
+import com.mianeko.gateway.api.models.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -28,22 +25,24 @@ class ReservationsApiHandler(
     @GetMapping
     fun getReservationForUser(
         @RequestHeader("X-User-Name") username: String
-    ): List<PaidReservationInfo> {
+    ): List<BasePaidReservationInfo> {
         return reservationClient
             .getInfoByUserId(username)
             .map { reservation ->
-                val paymentInfo = paymentClient.getPaymentById(reservation.paymentUid)
-                PaidReservationInfo(
-                    reservationUid = reservation.reservationUid,
-                    hotel = reservation.hotel,
-                    startDate = reservation.startDate,
-                    endDate = reservation.endDate,
-                    status = reservation.status,
-                    payment = ShortPaymentInfo(
-                        status = paymentInfo.status,
-                        price = paymentInfo.price
-                    )
-                )
+                paymentClient.getPaymentById(reservation.paymentUid)
+                    ?.let { paymentInfo ->
+                        PaidReservationInfo(
+                            reservationUid = reservation.reservationUid,
+                            hotel = reservation.hotel,
+                            startDate = reservation.startDate,
+                            endDate = reservation.endDate,
+                            status = reservation.status,
+                            payment = ShortPaymentInfo(
+                                status = paymentInfo.status,
+                                price = paymentInfo.price
+                            )
+                        )
+                    } ?: EmptyPaidReservationInfo
             }
     }
 
@@ -54,19 +53,21 @@ class ReservationsApiHandler(
     ): BookReservationInfo {
         log.info("Got reserve request from $username with data $template")
         val reserveDays = template.startDate.until(template.endDate).days
-        log.info("Reserve days are $reserveDays")
-        val loyalty = loyaltyClient.getLoyaltyForUser(username)
         val fullPrice = try {
             reservationClient.getHotelPrice(template.hotelUid) * reserveDays
         } catch (e: Exception) {
             throw HotelNotFoundApiException(template.hotelUid)
         }
+        log.info("Reserve days are $reserveDays")
+        val loyalty = loyaltyClient.getLoyaltyForUser(username)
         val price = fullPrice - fullPrice * loyalty.discount / 100
         log.info("Price is {}", price)
 
         val payment = paymentClient.create(PaymentTemplate(price))
 
-        loyaltyClient.incrementReservations(username)
+        loyaltyClient.incrementReservationsWithRetry(username) {
+            paymentClient.deleteById(payment.paymentUid)
+        }
 
         val createdBook = reservationClient.createReservation(
             ReservationTemplate(
@@ -106,7 +107,9 @@ class ReservationsApiHandler(
             startDate = reservation.startDate,
             endDate = reservation.endDate,
             status = reservation.status,
-            payment = ShortPaymentInfo(payment.status, payment.price)
+            payment = payment?.let {
+                ShortPaymentInfo(it.status, it.price)
+            } ?: EmptyShortPaymentInfo
         )
     }
 
@@ -119,6 +122,8 @@ class ReservationsApiHandler(
         reservationClient.deleteReservation(reservationUid)
         val reservation = reservationClient.getReservationInfo(reservationUid)
         paymentClient.deleteById(reservation.paymentUid)
-        loyaltyClient.decrementReservations(username)
+        loyaltyClient.decrementReservationsWithRetry(username) {
+            log.info("Request failed, onFailed callback called")
+        }
     }
 }

@@ -6,8 +6,35 @@ spring:
   servlet:
     multipart:
       resolve-lazily: true
+  cloud:
+    openfeign:
+      circuitbreaker:
+        group:
+          enabled: true
+        enabled: true
+        alphanumeric-ids:
+          enabled: true
 custom:
   services:
     loyalty: http://localhost:8050/api/v1/loyalties
     payment: http://localhost:8060/api/v1/payments
     reservation: http://localhost:8070/api/v1
+
+
+resilience4j:
+  timelimiter:
+    instances:
+      LoyaltyClient:
+        timeout-duration: 10s
+  circuitbreaker:
+    instances:
+      LoyaltyClient:
+        minimumNumberOfCalls: 10
+
+  retry:
+    instances:
+      LoyaltyClient:
+        retryExceptions:
+          - java.lang.Throwable
+        max-attempts: 10
+        wait-duration: 1s

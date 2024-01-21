@@ -46,4 +46,11 @@ class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ErrorDescription(e.message ?: "Payment service exception occurred"))
     }
+
+    @ExceptionHandler(ServiceNotAvailableApiException::class)
+    fun handleServiceUnavailable(e: ServiceNotAvailableApiException, request: WebRequest): ResponseEntity<ErrorDescription> {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+            .body(ErrorDescription(e.message ?: "Service not available"))
+    }
+
 }

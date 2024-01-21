@@ -40,6 +40,7 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.cloud:spring-cloud-circuitbreaker-resilience4j:3.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")

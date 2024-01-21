@@ -5,14 +5,18 @@ import com.mianeko.common.reservation.ShortHotelInfo
 import java.time.LocalDate
 import java.util.*
 
+sealed class BasePaidReservationInfo
+
 data class PaidReservationInfo(
     val reservationUid: UUID,
     val hotel: ShortHotelInfo,
     val startDate: LocalDate,
     val endDate: LocalDate,
     val status: ReservationStatus,
-    val payment: ShortPaymentInfo
-)
+    val payment: BaseShortPaymentInfo
+): BasePaidReservationInfo()
+
+data object EmptyPaidReservationInfo: BasePaidReservationInfo()
 
 data class BookReservationInfo(
     val reservationUid: UUID,
