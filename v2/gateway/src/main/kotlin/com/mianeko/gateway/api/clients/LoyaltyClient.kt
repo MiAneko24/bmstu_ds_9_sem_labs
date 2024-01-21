@@ -1,5 +1,6 @@
 package com.mianeko.gateway.api.clients
 
+import com.mianeko.common.exceptions.ServiceNotAvailableApiException
 import com.mianeko.common.loyalty.Loyalty
 import feign.RetryableException
 import feign.Retryer
@@ -7,7 +8,6 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.*
-import javax.naming.ServiceUnavailableException
 
 @Component
 class LoyaltyRetryer: Retryer {
@@ -73,7 +73,7 @@ interface LoyaltyClient {
 @Component
 class LoyaltyClientFallback: LoyaltyClient {
     override fun getLoyaltyForUser(username: String): Loyalty {
-        throw ServiceUnavailableException(SERVICE_NOT_AVAILABLE_MESSAGE)
+        throw ServiceNotAvailableApiException(SERVICE_NOT_AVAILABLE_MESSAGE)
     }
 
     override fun getLoyaltyForUserWithFallback(username: String): Loyalty? {
@@ -81,7 +81,7 @@ class LoyaltyClientFallback: LoyaltyClient {
     }
 
     override fun incrementReservations(username: String): Loyalty {
-        throw ServiceUnavailableException(SERVICE_NOT_AVAILABLE_MESSAGE)
+        throw ServiceNotAvailableApiException(SERVICE_NOT_AVAILABLE_MESSAGE)
     }
 
     override fun incrementReservationsWithRetry(
@@ -93,7 +93,7 @@ class LoyaltyClientFallback: LoyaltyClient {
     }
 
     override fun decrementReservations(username: String): Loyalty {
-        throw ServiceUnavailableException(SERVICE_NOT_AVAILABLE_MESSAGE)
+        throw ServiceNotAvailableApiException(SERVICE_NOT_AVAILABLE_MESSAGE)
     }
 
     override fun decrementReservationsWithRetry(
