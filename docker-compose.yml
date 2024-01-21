@@ -75,14 +75,30 @@ services:
     ports:
       - 8080:8080
     environment:
-      - CUSTOM_SERVICES_LOYALTY=http://loyalty-service:8080/api/v1/loyalties
-      - CUSTOM_SERVICES_PAYMENT=http://payment-service:8080/api/v1/payments
-      - CUSTOM_SERVICES_RESERVATION=http://reservation-service:8080/api/v1
+      CUSTOM_SERVICES_LOYALTY: "http://loyalty-service:8080/api/v1/loyalties"
+      CUSTOM_SERVICES_PAYMENT: "http://payment-service:8080/api/v1/payments"
+      CUSTOM_SERVICES_RESERVATION: "http://reservation-service:8080/api/v1"
+      RABBITMQ_HOST: rabbit-mq
     depends_on:
       - hotels-reservation-db
       - loyalty-service
       - reservation-service
       - payment-service
+      - rabbit-mq
+    networks:
+      - host
+
+  rabbit-mq:
+    image: rabbitmq:3.12-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - 5672:5672
+      - "15672:15672"
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
     networks:
       - host
 

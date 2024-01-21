@@ -7,6 +7,8 @@ import com.mianeko.gateway.api.clients.LoyaltyClient
 import com.mianeko.gateway.api.clients.PaymentClient
 import com.mianeko.gateway.api.clients.ReservationClient
 import com.mianeko.gateway.api.models.*
+import com.mianeko.gateway.rabbitMq.RequestSender
+import com.mianeko.gateway.rabbitMq.models.RabbitMqRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -18,7 +20,8 @@ import java.util.*
 class ReservationsApiHandler(
     private val reservationClient: ReservationClient,
     private val paymentClient: PaymentClient,
-    private val loyaltyClient: LoyaltyClient
+    private val loyaltyClient: LoyaltyClient,
+    private val requestSender: RequestSender
 ) {
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -123,7 +126,7 @@ class ReservationsApiHandler(
         val reservation = reservationClient.getReservationInfo(reservationUid)
         paymentClient.deleteById(reservation.paymentUid)
         loyaltyClient.decrementReservationsWithRetry(username) {
-            log.info("Request failed, onFailed callback called")
+           requestSender.sendRequest(RabbitMqRequest.LoyaltyDecrementReservationsRequest(username))
         }
     }
 }

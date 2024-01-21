@@ -42,6 +42,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.cloud:spring-cloud-circuitbreaker-resilience4j:3.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
+	implementation("org.springframework.amqp:spring-rabbit")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 }

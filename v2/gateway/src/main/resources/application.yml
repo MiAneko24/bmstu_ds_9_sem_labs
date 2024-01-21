@@ -38,3 +38,11 @@ resilience4j:
           - java.lang.Throwable
         max-attempts: 10
         wait-duration: 1s
+
+rabbitmq:
+  host: localhost
+  port: 5672
+  queues:
+    requests: "requests"
+  exchanges:
+    requests: "requests"

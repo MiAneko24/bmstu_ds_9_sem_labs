@@ -55,7 +55,7 @@ interface LoyaltyClient {
     @PostMapping("/actions/increment_reservations_count/{username}")
     fun incrementReservationsWithRetry(
         @PathVariable username: String,
-        @RequestHeader /* Will go to body otherwise */ onFail: () -> Unit
+        @RequestHeader /* Will go to body otherwise */ failCallback: () -> Unit
     ): Loyalty?
 
     @PostMapping("/actions/decrement_reservations_count/{username}")
@@ -66,16 +66,14 @@ interface LoyaltyClient {
     @PostMapping("/actions/decrement_reservations_count/{username}")
     fun decrementReservationsWithRetry(
         @PathVariable username: String,
-        @RequestHeader /* Will go to body otherwise */ onFail: () -> Unit
+        @RequestHeader /* Will go to body otherwise */ failCallback: () -> Unit
     ): Loyalty?
 }
 
 @Component
 class LoyaltyClientFallback: LoyaltyClient {
-    private val unavailableMessage = "Loyalty service is not available"
-
     override fun getLoyaltyForUser(username: String): Loyalty {
-        throw ServiceUnavailableException(unavailableMessage)
+        throw ServiceUnavailableException(SERVICE_NOT_AVAILABLE_MESSAGE)
     }
 
     override fun getLoyaltyForUserWithFallback(username: String): Loyalty? {
@@ -83,23 +81,30 @@ class LoyaltyClientFallback: LoyaltyClient {
     }
 
     override fun incrementReservations(username: String): Loyalty {
-        throw ServiceUnavailableException(unavailableMessage)
+        throw ServiceUnavailableException(SERVICE_NOT_AVAILABLE_MESSAGE)
     }
 
     override fun incrementReservationsWithRetry(
         username: String,
-        onFail: () -> Unit,
+        failCallback: () -> Unit,
     ): Loyalty? {
-        onFail()
+        failCallback()
         return null
     }
 
     override fun decrementReservations(username: String): Loyalty {
-        throw ServiceUnavailableException(unavailableMessage)
+        throw ServiceUnavailableException(SERVICE_NOT_AVAILABLE_MESSAGE)
     }
 
-    override fun decrementReservationsWithRetry(username: String, onFail: () -> Unit): Loyalty? {
-        onFail()
+    override fun decrementReservationsWithRetry(
+        username: String,
+        failCallback: () -> Unit
+    ): Loyalty? {
+        failCallback()
         return null
+    }
+
+    companion object {
+        private const val SERVICE_NOT_AVAILABLE_MESSAGE = "Loyalty service is not available"
     }
 }
